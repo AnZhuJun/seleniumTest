@@ -31,6 +31,7 @@ public class TowerDemo {
 
         Thread.sleep(2000);
         uoloadFile(webDriver,"查勘表");
+
         Thread.sleep(2000);
         uoloadFile(webDriver,"现场布置图");
 
@@ -93,7 +94,7 @@ public class TowerDemo {
         Thread.sleep(1000);
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr[2]/td/span")).findElement(By.cssSelector("object.swfupload")).click();
         Thread.sleep(1000);
-        Runtime.getRuntime().exec("D:\\autoltWork\\1.exe");
+        Runtime.getRuntime().exec("D:\\autoltWork\\" + fileName + "文件选择程序.exe");
 
         //上传类型--查勘表
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr/td/span/span/input")).click();
@@ -112,13 +113,14 @@ public class TowerDemo {
         //打印是否为查勘表
 //        System.out.println(webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).getAttribute("textContent"));
 
+        Thread.sleep(3000);
         //上传
         webDriver.findElement(By.xpath("//html/body/div[2]/div/table/tbody/tr/td/a[1]/span")).click();
-        Thread.sleep(1000);
+
 
         //取消按钮
         webDriver.findElement(By.xpath("//html/body/div[3]/div/div[2]/div[2]/div/table/tbody/tr[3]/td/a[2]/span")).click();
-
+        Thread.sleep(1000);
         //关闭上传附件窗口
         Thread.sleep(1000);
         webDriver.switchTo().defaultContent();
