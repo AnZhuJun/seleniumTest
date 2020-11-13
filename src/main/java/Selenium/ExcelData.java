@@ -38,6 +38,10 @@ public class ExcelData {
         return cell;
     }
 
+    public int getRows(){
+        return sheet.getPhysicalNumberOfRows();
+    }
+
     /**
      * 根据某一列值为“******”的这一行，来获取该行第x列的值
      * @param caseName
@@ -45,7 +49,6 @@ public class ExcelData {
      * @param targetColumn 目标单元格列的索引
      * @return
      */
-
     public String getCellByCaseName(String caseName,int currentColumn,int targetColumn){
         String operateSteps="";
         //获取行数
