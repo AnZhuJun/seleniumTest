@@ -80,6 +80,7 @@ public class TowerDemo {
         webDriver.findElement(By.id("mini-1$2")).click();
         webDriver.switchTo().frame("tab12");
     }
+
     public static void findTittletext(WebDriver webDriver,String taskTitletext) throws InterruptedException {
         Set<String> windowhandle = webDriver.getWindowHandles();
         List<String> allWindows = new ArrayList<String>(windowhandle);
@@ -131,14 +132,12 @@ public class TowerDemo {
                 break;
         }
 
-
         //打印是否为查勘表
 //        System.out.println(webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).getAttribute("textContent"));
 
         Thread.sleep(1300);
         //上传
         webDriver.findElement(By.xpath("//html/body/div[2]/div/table/tbody/tr/td/a[1]/span")).click();
-
 
         //取消按钮
         webDriver.findElement(By.xpath("//html/body/div[3]/div/div[2]/div[2]/div/table/tbody/tr[3]/td/a[1]/span")).click();
