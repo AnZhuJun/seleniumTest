@@ -4,7 +4,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
+import java.io.*;
 
 public class ExcelData {
     private XSSFSheet sheet;
@@ -21,6 +21,7 @@ public class ExcelData {
             XSSFWorkbook sheets = new XSSFWorkbook(fileInputStream);
             //获取sheet
             sheet = sheets.getSheet(sheetName);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,6 +38,22 @@ public class ExcelData {
         String cell = row1.getCell(column).toString();
         return cell;
     }
+
+    public  void writeExcelDateByIndex(String filePath,String sheetName,int row,int column,String value) throws IOException {
+        FileInputStream fileInputStream = null;
+        fileInputStream = new FileInputStream(filePath);
+        XSSFWorkbook sheets = new XSSFWorkbook(fileInputStream);
+            //获取sheet
+        sheet = sheets.getSheet(sheetName);
+
+        XSSFRow row1 = sheet.getRow(row);
+        row1.createCell(column).setCellValue(value);
+
+        OutputStream op = new FileOutputStream(filePath);
+        sheets.write(op);
+        op.close();
+    }
+
 
     public int getRows(){
         return sheet.getPhysicalNumberOfRows();
@@ -80,14 +97,15 @@ public class ExcelData {
     }
 
     //测试方法
-    public static void main(String[] args){
-        ExcelData sheet1 = new ExcelData("D:\\firstTest.xlsx", "sheet1");
+    public static void main(String[] args) throws IOException {
+        ExcelData sheet1 = new ExcelData("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1");
         //获取第二行第4列
         String cell2 = sheet1.getExcelDateByIndex(1, 3);
         //根据第3列值为“customer23”的这一行，来获取该行第2列的值
-        String cell3 = sheet1.getCellByCaseName("customer23", 2,1);
+//        String cell3 = sheet1.getCellByCaseName("customer23", 2,1);
         System.out.println(cell2);
-        System.out.println(cell3);
+//        System.out.println(cell3);
 //        sheet1.readExcelData();
+        sheet1.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1",1,1,"1");
     }
 }
