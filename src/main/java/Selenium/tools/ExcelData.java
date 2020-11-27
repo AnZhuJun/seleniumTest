@@ -1,4 +1,4 @@
-package Selenium;
+package Selenium.tools;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,7 +14,7 @@ public class ExcelData {
      * @param filePath  excel路径
      * @param sheetName sheet表名
      */
-    ExcelData(String filePath,String sheetName){
+    public ExcelData(String filePath, String sheetName){
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(filePath);
@@ -81,6 +81,28 @@ public class ExcelData {
         return operateSteps;
     }
 
+    public String getMultiCellByCaseName(String caseName1,String caseName2,String caseName3,int currentColumn1,int currentColumn2,int currentColumn3,int targetColumn){
+        String operateSteps="";
+        //获取行数
+        int rows = sheet.getPhysicalNumberOfRows();
+        for(int i=4;i<rows;i++){
+            XSSFRow row = sheet.getRow(i);
+            XSSFRow row2 = sheet.getRow(i);
+            XSSFRow row3 = sheet.getRow(i);
+            String cell1 = row.getCell(currentColumn1).toString();
+//            System.out.println(cell1);
+            String cell2 = row2.getCell(currentColumn2).toString();
+//            System.out.println(cell2);
+            String cell3 = row3.getCell(currentColumn3).toString();
+//            System.out.println(cell3);
+            if(cell1.equals(caseName1) && cell2.equals(caseName2) && cell3.equals(caseName3)){
+                operateSteps = row.getCell(targetColumn).toString();
+                break;
+            }
+        }
+        return operateSteps;
+    }
+
     //打印excel数据
     public void readExcelData(){
         //获取行数
@@ -102,10 +124,10 @@ public class ExcelData {
         //获取第二行第4列
         String cell2 = sheet1.getExcelDateByIndex(1, 3);
         //根据第3列值为“customer23”的这一行，来获取该行第2列的值
-//        String cell3 = sheet1.getCellByCaseName("customer23", 2,1);
-        System.out.println(cell2);
-//        System.out.println(cell3);
+        String cell3 = sheet1.getCellByCaseName("900101060810", 2,1);
+//        System.out.println(cell2);
+        System.out.println(cell3);
 //        sheet1.readExcelData();
-        sheet1.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1",1,1,"1");
+//        sheet1.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1",1,1,"1");
     }
 }

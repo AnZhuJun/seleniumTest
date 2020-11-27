@@ -1,4 +1,6 @@
-package Selenium;
+package Selenium.tools;
+
+import Selenium.tools.ExcelData;
 
 public class SplitDemo {
     public static void main(String[] args) {
