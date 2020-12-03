@@ -1,6 +1,7 @@
-package Selenium.service;
+package ChromeSelenium.ptService;
 
-import Selenium.tools.ExcelData;
+import ChromeSelenium.service.preDesignDataSer;
+import ChromeSelenium.tools.ExcelData;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -8,12 +9,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class EquipmentMaterPreDesign {
-    public static void main(String[] args) throws AWTException, InterruptedException {
+    public static void main(String[] args) throws AWTException, InterruptedException, IOException {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
 
@@ -22,50 +24,67 @@ public class EquipmentMaterPreDesign {
 
         webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
 
-
         String excelPath = "D:\\seleniumWork\\excel数据表格\\excel1.xlsx";
         String excelSheet = "sheet1";
-
-
-
         ExcelData excelData = new ExcelData(excelPath, excelSheet);
+        int excelRows = excelData.getRows();
+        List<String> name = new ArrayList<String>();
 
-        preDesignDataSer preDesignDataSer = new preDesignDataSer();
+        for(int i = 2;i<=excelRows;i++){
+            name.add(excelData.getExcelDateByIndex(i-1,1-1));
+        }
 
-        //设计表路径
-        String preDesignPath = "D:\\seleniumWork\\excel数据表格\\实验三中美团龙城换电站3主动规划能源类项目-预设计表.xlsx";
+        List<String> record = preDesignDataSer.getRecord();
 
-        //编号表
-        List<String> idList = preDesignDataSer.getIdList(preDesignPath);
-        //价格表
-        List<String> priceList = preDesignDataSer.getPriceList(preDesignPath);
-        //数量表
-        List<String> numList = preDesignDataSer.getNumsList(preDesignPath);
-        //外电价格(特殊)
-        String outPrice = preDesignDataSer.getOutEle(preDesignPath);
 
-        System.out.println(idList + " 长度 " + idList.size());
-        System.out.println(priceList + " 长度 " + priceList.size());
-        System.out.println(numList + " 长度 " + numList.size());
+        for (int i = 0;i<name.size();i++) {
+            if (record.get(i).equals("0.0") || record.get(i).equals("0")) {
+                preDesignDataSer preDesignDataSer = new preDesignDataSer();
 
-        int preDesignRows = idList.size();
-        System.out.println("一共要处理的物资/服务有 ：  " + preDesignRows + "  个!");
+                //设计表路径
+                String preDesignPath = "D:\\seleniumWork\\excel数据表格\\" + name.get(i)  +"\\" + name.get(i) + "-预设计表.xlsx";
 
-        doNYByTitle(webDriver);
-        findTittletext(webDriver,"实验三中美团龙城换电站3主动规划能源类项目");
+                //编号表
+                List<String> idList = preDesignDataSer.getIdList(preDesignPath);
+                //价格表
+                List<String> priceList = preDesignDataSer.getPriceList(preDesignPath);
+                //数量表
+                List<String> numList = preDesignDataSer.getNumsList(preDesignPath);
+                //外电价格(特殊)
+                String outPrice = preDesignDataSer.getOutEle(preDesignPath);
 
-        //处理第一个alert
-        Thread.sleep(3000);
-        pressEnter();
+                System.out.println(idList + " 长度 " + idList.size());
+                System.out.println(priceList + " 长度 " + priceList.size());
+                System.out.println(numList + " 长度 " + numList.size());
 
-        Thread.sleep(1000);
+                int preDesignRows = idList.size();
+                System.out.println("一共要处理的物资/服务有 ：  " + preDesignRows + "  个!");
 
-        theService(webDriver, idList, numList, outPrice);
+                doNYByTitle(webDriver);
+                findTittletext(webDriver, name.get(i));
 
-        closeWindow(webDriver);
+                //处理第一个alert
+                Thread.sleep(7000);
+                pressEnter();
 
-        theJiaService(webDriver, idList, numList);
+                Thread.sleep(1000);
 
+                theService(webDriver, idList, numList, outPrice);
+
+                Thread.sleep(1000);
+                closeWindow(webDriver);
+
+                theJiaService(webDriver, idList, numList);
+
+                excelData.writeExcelDateByIndex(excelPath,excelSheet,i+1,2-1,"1");
+
+                closeNYDetail(webDriver);
+
+
+            }else {
+                continue;
+            }
+        }
 
     }
 
@@ -113,7 +132,7 @@ public class EquipmentMaterPreDesign {
     }
 
     public static void closeWindow(WebDriver webDriver) throws InterruptedException {
-        webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div/div[2]/span[4]")).click();
+        webDriver.findElement(By.xpath("//html/body/div[5]/div/div[1]/div/div[2]/span[4]")).click();
         Thread.sleep(1000);
     }
 
@@ -135,10 +154,11 @@ public class EquipmentMaterPreDesign {
 
         //单击确定
         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr/td[3]/a[2]/span")).click();
-        Thread.sleep(2000);
+        Thread.sleep(1500);
 
         //根据id找到对应的那一行,单击数量
         for(int i = 3;i<100;i++) {
+        Thread.sleep(1000);
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
 
                 if (!nums.equals("1.0")) {
@@ -194,7 +214,7 @@ public class EquipmentMaterPreDesign {
 
         //单击确定
         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr/td[3]/a[2]/span")).click();
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         for(int i = 3;i<100;i++) {
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
@@ -274,7 +294,7 @@ public class EquipmentMaterPreDesign {
     //单击到甲供设备材料选择物资
     public static void clickJiaService(WebDriver webDriver) throws InterruptedException {
         //单击甲供设备材料清单
-        webDriver.findElement(By.xpath("//html/body/div[2]/div[4]/div/div/div[2]/div[2]/div[4]/table/tbody/tr/td[2]/div[1]/div[3]/table/tbody/tr/td[6]/span")).click();
+        webDriver.findElement(By.xpath("//html/body/div[2]/div[7]/div/div/div[2]/div[2]/div[4]/table/tbody/tr/td[2]/div[1]/div[3]/table/tbody/tr/td[6]/span")).click();
 
         //切换iframe
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
@@ -303,8 +323,10 @@ public class EquipmentMaterPreDesign {
         webDriver.switchTo().window(allWindows.get(2));
         webDriver.switchTo().frame("pageSet");
         webDriver.switchTo().frame("mainframe");
-        webDriver.findElement(By.id("mini-1$2")).click();
-        webDriver.switchTo().frame("tab12");
+//        webDriver.findElement(By.id("mini-1$2")).click();
+
+//        webDriver.findElement(By.id("mini-1$1")).click();
+        webDriver.switchTo().frame("tab1");
     }
 
     public static void findTittletext(WebDriver webDriver,String taskTitletext) throws InterruptedException {
@@ -315,7 +337,7 @@ public class EquipmentMaterPreDesign {
         webDriver.findElement(By.linkText("查询")).click();
 
         Thread.sleep(2000);
-        webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.xpath(".//*[@id=\"mini-30$row2$1\"]/td[2]/div/a")).click();
+        webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.xpath(".//*[@id=\"mini-29$row2$1\"]/td[2]/div/a")).click();
         Thread.sleep(2000);
         windowhandle = webDriver.getWindowHandles();
         allWindows = new ArrayList<String>(windowhandle);

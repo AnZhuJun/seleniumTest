@@ -1,7 +1,7 @@
-package Selenium.service;
+package ChromeSelenium.service;
 
-import Selenium.tools.ExcelData;
-import Selenium.interf.preDesignDataInter;
+import ChromeSelenium.tools.ExcelData;
+import ChromeSelenium.interf.preDesignDataInter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -150,8 +150,45 @@ public class preDesignDataSer implements preDesignDataInter{
 
     }
 
+    public static List<String> getRecord(){
+        String excelPath = "D:\\seleniumWork\\excel数据表格\\excel1.xlsx";
+        String excelSheet = "sheet1";
+        ExcelData excelData = new ExcelData(excelPath,excelSheet);
+        int excelRows = excelData.getRows();
+        List<String> record = new ArrayList<String>();
+
+        for(int i = 2;i<=excelRows;i++){
+            record.add(excelData.getExcelDateByIndex(i-1,2-1));
+        }
+
+        return record;
+    }
+
+    public static List<String> getName(){
+        String excelPath = "D:\\seleniumWork\\excel数据表格\\excel1.xlsx";
+        String excelSheet = "sheet1";
+        ExcelData excelData = new ExcelData(excelPath,excelSheet);
+        int excelRows = excelData.getRows();
+        List<String> name = new ArrayList<String>();
+
+        for(int i = 2;i<=excelRows;i++){
+            name.add(excelData.getExcelDateByIndex(i-1,1-1));
+        }
+
+        return name;
+    }
+
+
     public static void main(String[] args) {
-        String path = "D:\\seleniumWork\\excel数据表格\\实验三中美团龙城换电站3主动规划能源类项目-预设计表.xlsx";
+
+        List<String> list1 = getName();
+        List<String> list11 = getRecord();
+
+        System.out.println(list1);
+        System.out.println(list11);
+
+
+        String path = "D:\\seleniumWork\\excel数据表格\\" + list1.get(0) +"\\" + list1.get(0) + "-预设计表.xlsx";
         preDesignDataSer preDesignDataSer = new preDesignDataSer();
         List<String> list = preDesignDataSer.getIdList(path);
         System.out.println(list+ " 长度: " + list.size());

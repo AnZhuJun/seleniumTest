@@ -1,6 +1,4 @@
-package Selenium.tools;
-
-import Selenium.tools.ExcelData;
+package ChromeSelenium.tools;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

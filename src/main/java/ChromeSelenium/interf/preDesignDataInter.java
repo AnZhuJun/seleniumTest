@@ -1,4 +1,4 @@
-package Selenium.interf;
+package ChromeSelenium.interf;
 
 import java.util.List;
 

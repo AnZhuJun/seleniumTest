@@ -1,8 +1,8 @@
-package Selenium.service;
+package ChromeSelenium.service;
 
 //Equipment and materials
 
-import Selenium.tools.ExcelData;
+import ChromeSelenium.tools.ExcelData;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

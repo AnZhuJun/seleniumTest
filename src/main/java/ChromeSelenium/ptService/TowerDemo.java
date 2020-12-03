@@ -1,7 +1,9 @@
-package Selenium.service;
+package ChromeSelenium.ptService;
 
-import Selenium.tools.ExcelData;
-import org.openqa.selenium.*;
+import ChromeSelenium.tools.ExcelData;
+import ChromeSelenium.tools.TakeFilePathAndName;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -13,45 +15,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static java.lang.Thread.sleep;
-
 public class TowerDemo {
     public static void main(String[] args) throws Exception {
-        System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
-        ChromeOptions options = new ChromeOptions();
-        ExcelData excelData = new ExcelData("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1");
+//        Scanner input = new Scanner(System.in);
+//        System.out.println("please input your key");
+//        String account = input.nextLine();
+//        System.out.println("please input your password");
+//        String password = input.nextLine();
 
-        options.setExperimentalOption("debuggerAddress", "127.0.0.1:9222");
-        WebDriver webDriver = new ChromeDriver(options);
+
+//        if (account.equals("123") && password.equals("123")) {
+
+
+            System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
+            ChromeOptions options = new ChromeOptions();
+            ExcelData excelData = new ExcelData("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1");
+
+            options.setExperimentalOption("debuggerAddress", "127.0.0.1:9222");
+            WebDriver webDriver = new ChromeDriver(options);
 
 //        webDriver.get("http://10.202.246.70/?service=chinaccs.cn/#/portals");
-        webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
+            webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
 
 
-        int excelRows = excelData.getRows();
-        for (int i = 2;i<=excelRows;i++) {
-            String Bi = excelData.getExcelDateByIndex(i-1,2-1);
-            System.out.println(Bi);
-            String Ai = excelData.getExcelDateByIndex(i-1,1-1);
-            System.out.println(Ai);
-            if (Bi.equals("0.0")) {
-                doNYByTitle(webDriver);
-                findTittletext(webDriver,Ai);
+            int excelRows = excelData.getRows();
+            for (int i = 2; i <= excelRows; i++) {
+                String Bi = excelData.getExcelDateByIndex(i - 1, 2 - 1);
+                System.out.println(Bi);
+                String Ai = excelData.getExcelDateByIndex(i - 1, 1 - 1);
+                System.out.println(Ai);
 
-                Thread.sleep(2000);
-                pressEnter();
+                List<String> fileNameType = new ArrayList<String>();
 
-                Thread.sleep(1000);
-                uoloadFile(webDriver, "查勘表");
 
-                Thread.sleep(1000);
-                uoloadFile(webDriver, "现场布置图");
+                if (Bi.equals("0.0")) {
+                    doNYByTitle(webDriver);
+                    findTittletext(webDriver, Ai);
 
-                closeNYDetail(webDriver);
-            }else {
-                continue;
+                    fileNameType = TakeFilePathAndName.getFile(Ai, 0);
+
+                    Thread.sleep(8000);
+                    pressEnter();
+
+                    for (int index = 0; index < fileNameType.size(); index++) {
+
+                        Thread.sleep(1000);
+                        uoloadFile(webDriver, fileNameType.get(index));
+                        excelData.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1", i + 1, 2 - 1, "1");
+                    }
+
+                    closeNYDetail(webDriver);
+                } else {
+                    continue;
+                }
             }
-        }
+//        }
+
     }
 
     public static void closeNYDetail(WebDriver webDriver) {
@@ -78,8 +97,7 @@ public class TowerDemo {
         webDriver.switchTo().window(allWindows.get(2));
         webDriver.switchTo().frame("pageSet");
         webDriver.switchTo().frame("mainframe");
-        webDriver.findElement(By.id("mini-1$2")).click();
-        webDriver.switchTo().frame("tab12");
+        webDriver.switchTo().frame("tab1");
     }
 
     public static void findTittletext(WebDriver webDriver,String taskTitletext) throws InterruptedException {
@@ -90,12 +108,13 @@ public class TowerDemo {
         webDriver.findElement(By.linkText("查询")).click();
 
         Thread.sleep(2000);
-        webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.xpath(".//*[@id=\"mini-30$row2$1\"]/td[2]/div/a")).click();
+        webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.xpath(".//*[@id=\"mini-29$row2$1\"]/td[2]/div/a")).click();
         Thread.sleep(2000);
         windowhandle = webDriver.getWindowHandles();
         allWindows = new ArrayList<String>(windowhandle);
         webDriver.switchTo().window(allWindows.get(3));
     }
+
 
     public static void pressEnter() throws InterruptedException, AWTException {
 
@@ -125,11 +144,24 @@ public class TowerDemo {
         int size = webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody")).findElements(By.tagName("tr")).size();
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr/td/span/span/input")).click();
         for(int i = 1;i<size;i++) {
+            String temp = fileName;
+            String temp1;
 
             webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr/td/span/span/input")).click();
+            Thread.sleep(500);
             String contents = webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).getAttribute("textContent");
+            System.out.println(contents + "11");
             webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).click();
-            if (contents.equals(fileName))
+
+            if(temp.equals("设计变更单") || temp.equals("说明文本") || temp.equals("预设计表"))
+                temp = "设计文件（含设计方案会审纪要）";
+
+            if(temp.equals("现场核查照片") || temp.equals("非模块化预算") || temp.equals("交付说明书"))
+                temp = "检测报告";
+
+            System.out.println(temp);
+
+            if (contents.equals(temp))
                 break;
         }
 
@@ -139,12 +171,12 @@ public class TowerDemo {
         Thread.sleep(1300);
         //上传
         webDriver.findElement(By.xpath("//html/body/div[2]/div/table/tbody/tr/td/a[1]/span")).click();
-
+        Thread.sleep(2000);
         //取消按钮
         webDriver.findElement(By.xpath("//html/body/div[3]/div/div[2]/div[2]/div/table/tbody/tr[3]/td/a[1]/span")).click();
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         //关闭上传附件窗口
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         webDriver.switchTo().defaultContent();
         webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div/div[2]/span[4]")).click();
 
