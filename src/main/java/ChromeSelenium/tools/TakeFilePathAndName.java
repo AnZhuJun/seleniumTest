@@ -16,7 +16,7 @@ public class TakeFilePathAndName {
 
     public static void main(String[] args) {
         //这是需要获取的文件夹路径
-        String path = "南内环西街新晋祠路口桥下换电站主动规划能源类项目";
+        String path = "太原杏花岭区黑土巷北区无线机房改造铁塔项目";
         System.out.println( getFile(path,0));
     }
 
@@ -39,7 +39,7 @@ public class TakeFilePathAndName {
         nameMap.put("外电资料","外电专业图纸");
         nameMap.put("设计变更单","设计变更单");
         nameMap.put("说明文本","说明文本");
-        nameMap.put("会审纪要","设计方案会审纪要");
+        nameMap.put("设计评审表（会审纪要)","设计方案会审纪要");
         nameMap.put("地勘报告","地勘报告");
         nameMap.put("无线配套图纸","动力配套专业图纸");
         nameMap.put("铁塔图纸","铁塔专业图纸");
@@ -61,7 +61,8 @@ public class TakeFilePathAndName {
                 String temp2 = temp.split("-")[1];
                 // 只输出文件名字
 
-                names.add(nameMap.get(temp2));
+                if (!temp2.equals("设计评审表（会审纪要)"))
+                    names.add(nameMap.get(temp2));
 
                 // 输出当前文件的完整路径
                 // System.out.println("#####" + array[i]);

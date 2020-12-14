@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+//普通项目上传附件
 public class EquipmentMaterPreDesign {
     public static void main(String[] args) throws AWTException, InterruptedException, IOException {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
@@ -158,33 +159,33 @@ public class EquipmentMaterPreDesign {
 
         //根据id找到对应的那一行,单击数量
         for(int i = 3;i<100;i++) {
-        Thread.sleep(1000);
+        Thread.sleep(500);
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
 
                 if (!nums.equals("1.0")) {
                     webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).click();
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     //将数量改为2.0000
                     webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(nums);
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     pressEnter();
                 }
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
 
                 String temp = webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[13]")).getText();
                 System.out.println(temp);
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 if (temp.equals("0.0000") || temp.equals("0.000") ||temp.equals("0.00") ||temp.equals("0.0") ||temp.equals("0"))
                 {
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[13]")).click();
                 webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys("1.0");
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 pressEnter();
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
                 }
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
                 break;
             }
@@ -218,30 +219,28 @@ public class EquipmentMaterPreDesign {
 
         for(int i = 3;i<100;i++) {
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
-
-
                 if(!serviceId.equals("90010106000000000004") && !nums.equals("1.0")){
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[7]")).click();
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 //将数量改为2.0000
                 webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(nums);
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 pressEnter();
                 }else if (serviceId.equals("90010106000000000004")){
                 String[] price2 = nums.split(",");
                 //当为外电的时候
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price2[0]);
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[14]")).click();
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price2[1]);
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 pressEnter();
                 }
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 //单击保存
                 webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
 
@@ -249,8 +248,7 @@ public class EquipmentMaterPreDesign {
             }
         }
 
-        Thread.sleep(1000);
-
+        Thread.sleep(500);
 
         webDriver.switchTo().defaultContent();
     }
@@ -269,10 +267,10 @@ public class EquipmentMaterPreDesign {
     public static void closeNYDetail(WebDriver webDriver) {
         Set<String> windowhandle = webDriver.getWindowHandles();
         List<String> allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(3)).close();
+        webDriver.switchTo().window(allWindows.get(2)).close();
         windowhandle = webDriver.getWindowHandles();
         allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(2)).close();
+        webDriver.switchTo().window(allWindows.get(1)).close();
     }
 
 
@@ -317,10 +315,10 @@ public class EquipmentMaterPreDesign {
 
         Set<String> windowhandle = webDriver.getWindowHandles();
         List<String> allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(2));
+        webDriver.switchTo().window(allWindows.get(1));
         webDriver.findElement(By.linkText("我的工作")).click();
         webDriver.findElement(By.linkText("我的待办")).click();
-        webDriver.switchTo().window(allWindows.get(2));
+        webDriver.switchTo().window(allWindows.get(1));
         webDriver.switchTo().frame("pageSet");
         webDriver.switchTo().frame("mainframe");
 //        webDriver.findElement(By.id("mini-1$2")).click();
@@ -341,7 +339,7 @@ public class EquipmentMaterPreDesign {
         Thread.sleep(2000);
         windowhandle = webDriver.getWindowHandles();
         allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(3));
+        webDriver.switchTo().window(allWindows.get(2));
     }
 
 

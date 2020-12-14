@@ -5,6 +5,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExcelData {
     private XSSFSheet sheet;
@@ -122,11 +124,26 @@ public class ExcelData {
     public static void main(String[] args) throws IOException {
         ExcelData sheet1 = new ExcelData("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1");
         //获取第二行第4列
-        String cell2 = sheet1.getExcelDateByIndex(1, 3);
+        String cell2 = sheet1.getExcelDateByIndex(1, 0);
         //根据第3列值为“customer23”的这一行，来获取该行第2列的值
-        String cell3 = sheet1.getCellByCaseName("900101060810", 2,1);
-//        System.out.println(cell2);
-        System.out.println(cell3);
+//        String cell3 = sheet1.getCellByCaseName("900101060810", 2,1);
+        System.out.println(cell2);
+
+        String excelPath = "D:\\seleniumWork\\excel数据表格\\excel1.xlsx";
+        String excelSheet = "sheet1";
+
+        ExcelData excelData = new ExcelData(excelPath, excelSheet);
+        int excelRows = excelData.getRows();
+        List<String> name = new ArrayList<String>();
+
+        System.out.println(excelRows);
+
+        for(int i = 2;i<=excelRows;i++){
+            name.add(excelData.getExcelDateByIndex(i-1,1-1));
+        }
+
+        System.out.println(name);
+//        System.out.println(cell3);
 //        sheet1.readExcelData();
 //        sheet1.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1",1,1,"1");
     }

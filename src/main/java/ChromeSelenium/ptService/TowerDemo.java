@@ -3,7 +3,9 @@ package ChromeSelenium.ptService;
 import ChromeSelenium.tools.ExcelData;
 import ChromeSelenium.tools.TakeFilePathAndName;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+//普通项目上传附件
 public class TowerDemo {
     public static void main(String[] args) throws Exception {
 //        Scanner input = new Scanner(System.in);
@@ -37,7 +40,6 @@ public class TowerDemo {
 //        webDriver.get("http://10.202.246.70/?service=chinaccs.cn/#/portals");
             webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
 
-
             int excelRows = excelData.getRows();
             for (int i = 2; i <= excelRows; i++) {
                 String Bi = excelData.getExcelDateByIndex(i - 1, 2 - 1);
@@ -47,24 +49,39 @@ public class TowerDemo {
 
                 List<String> fileNameType = new ArrayList<String>();
 
-
                 if (Bi.equals("0.0")) {
+                    webDriver.get("chrome://settings/clearBrowserData");
+                    webDriver.manage().window().maximize();
+                    JavascriptExecutor js1 = (JavascriptExecutor) webDriver;
+                    WebElement clearData = (WebElement) js1.executeScript("return document.querySelector('settings-ui').shadowRoot.querySelector('settings-main').shadowRoot.querySelector('settings-basic-page').shadowRoot.querySelector('settings-section > settings-privacy-page').shadowRoot.querySelector('settings-clear-browsing-data-dialog').shadowRoot.querySelector('#clearBrowsingDataDialog').querySelector('#clearBrowsingDataConfirm')");
+// now you can click on clear data button
+                    clearData.click();
+
+                    webDriver.manage().deleteAllCookies();
+                    String js = "window.localStorage.clear()";
+                    JavascriptExecutor javascriptExecutor = (JavascriptExecutor) webDriver;
+                    javascriptExecutor.executeScript(js);
+
+                    webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
+                    logIn(webDriver);
+                    webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
                     doNYByTitle(webDriver);
                     findTittletext(webDriver, Ai);
 
                     fileNameType = TakeFilePathAndName.getFile(Ai, 0);
 
-                    Thread.sleep(8000);
+                    Thread.sleep(6000);
                     pressEnter();
 
                     for (int index = 0; index < fileNameType.size(); index++) {
 
-                        Thread.sleep(1000);
+                        Thread.sleep(1400);
                         uoloadFile(webDriver, fileNameType.get(index));
-                        excelData.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1", i + 1, 2 - 1, "1");
                     }
 
+                    excelData.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1", i - 1, 2 - 1, "1");
                     closeNYDetail(webDriver);
+                    cleanAllCookies(webDriver);
                 } else {
                     continue;
                 }
@@ -73,13 +90,34 @@ public class TowerDemo {
 
     }
 
+    public static void cleanAllCookies(WebDriver webDriver) {
+        Set<String> windowhandle = webDriver.getWindowHandles();
+        List<String> allWindows = new ArrayList<String>(windowhandle);
+        windowhandle = webDriver.getWindowHandles();
+        allWindows = new ArrayList<String>(windowhandle);
+
+        webDriver.switchTo().window(allWindows.get(0));
+        webDriver.manage().deleteAllCookies();
+        String js = "window.localStorage.clear()";
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) webDriver;
+        javascriptExecutor.executeScript(js);
+    }
+
+    public static void logIn(WebDriver webDriver) throws InterruptedException {
+        webDriver.findElement(By.id("username")).sendKeys("18911786690");
+        webDriver.findElement(By.id("password")).sendKeys("gpDI510630");
+        Thread.sleep(300);
+        webDriver.findElement(By.xpath("//html/body/div[1]/div[2]/div[2]/div[2]/input[2]")).click();
+
+    }
+
     public static void closeNYDetail(WebDriver webDriver) {
         Set<String> windowhandle = webDriver.getWindowHandles();
         List<String> allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(3)).close();
+        webDriver.switchTo().window(allWindows.get(2)).close();
         windowhandle = webDriver.getWindowHandles();
         allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(2)).close();
+        webDriver.switchTo().window(allWindows.get(1)).close();
     }
 
     public static void doNYByTitle(WebDriver webDriver) throws InterruptedException {
@@ -91,10 +129,10 @@ public class TowerDemo {
 
         Set<String> windowhandle = webDriver.getWindowHandles();
         List<String> allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(2));
+        webDriver.switchTo().window(allWindows.get(1));
         webDriver.findElement(By.linkText("我的工作")).click();
         webDriver.findElement(By.linkText("我的待办")).click();
-        webDriver.switchTo().window(allWindows.get(2));
+        webDriver.switchTo().window(allWindows.get(1));
         webDriver.switchTo().frame("pageSet");
         webDriver.switchTo().frame("mainframe");
         webDriver.switchTo().frame("tab1");
@@ -107,12 +145,12 @@ public class TowerDemo {
         webDriver.findElement(By.id("taskTitle$text")).sendKeys(taskTitletext);
         webDriver.findElement(By.linkText("查询")).click();
 
-        Thread.sleep(2000);
-        webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.xpath(".//*[@id=\"mini-29$row2$1\"]/td[2]/div/a")).click();
-        Thread.sleep(2000);
+        Thread.sleep(1000);
+        webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody/tr[3]/td[2]/div/a")).click();
+        Thread.sleep(1000);
         windowhandle = webDriver.getWindowHandles();
         allWindows = new ArrayList<String>(windowhandle);
-        webDriver.switchTo().window(allWindows.get(3));
+        webDriver.switchTo().window(allWindows.get(2));
     }
 
 
@@ -136,21 +174,20 @@ public class TowerDemo {
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr[2]/td/span/span")).click();
         Thread.sleep(1000);
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr[2]/td/span")).findElement(By.cssSelector("object.swfupload")).click();
-        Thread.sleep(1000);
+        Thread.sleep(250);
         Runtime.getRuntime().exec("D:\\autoltWork\\" + fileName + "文件选择程序.exe");
 
         //上传类型--查勘表
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr/td/span/span/input")).click();
+        Thread.sleep(1000);
         int size = webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody")).findElements(By.tagName("tr")).size();
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr/td/span/span/input")).click();
-        for(int i = 1;i<size;i++) {
+        for(int i = 1;i<=size;i++) {
             String temp = fileName;
-            String temp1;
 
             webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr/td/span/span/input")).click();
-            Thread.sleep(500);
+
             String contents = webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).getAttribute("textContent");
-            System.out.println(contents + "11");
             webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).click();
 
             if(temp.equals("设计变更单") || temp.equals("说明文本") || temp.equals("预设计表"))
@@ -159,8 +196,6 @@ public class TowerDemo {
             if(temp.equals("现场核查照片") || temp.equals("非模块化预算") || temp.equals("交付说明书"))
                 temp = "检测报告";
 
-            System.out.println(temp);
-
             if (contents.equals(temp))
                 break;
         }
@@ -168,17 +203,18 @@ public class TowerDemo {
         //打印是否为查勘表
 //        System.out.println(webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).getAttribute("textContent"));
 
-        Thread.sleep(1300);
+
         //上传
         webDriver.findElement(By.xpath("//html/body/div[2]/div/table/tbody/tr/td/a[1]/span")).click();
-        Thread.sleep(2000);
-        //取消按钮
+        //确定按钮
         webDriver.findElement(By.xpath("//html/body/div[3]/div/div[2]/div[2]/div/table/tbody/tr[3]/td/a[1]/span")).click();
-        Thread.sleep(3000);
+
         //关闭上传附件窗口
-        Thread.sleep(3000);
+        Thread.sleep(3500);
+//        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div[2]/a/span")).click();
+//        webDriver.switchTo().defaultContent();
         webDriver.switchTo().defaultContent();
-        webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div/div[2]/span[4]")).click();
+        webDriver.findElement(By.xpath("//html/body/div[5]/div/div[1]/div/div[2]/span[4]")).click();
 
         //运行去除readonly属性
 //        String js = "document.getElementById('fileupload$text').removeAttribute('readonly')";
