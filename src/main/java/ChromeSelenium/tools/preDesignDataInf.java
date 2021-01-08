@@ -1,6 +1,5 @@
-package ChromeSelenium.service;
+package ChromeSelenium.tools;
 
-import ChromeSelenium.tools.ExcelData;
 import ChromeSelenium.interf.preDesignDataInter;
 
 import java.math.BigDecimal;
@@ -9,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class preDesignDataSer implements preDesignDataInter{
+public class preDesignDataInf implements preDesignDataInter{
 
     public List<String> getIdList(String path){
         ExcelData preDesignData = new ExcelData(path, "预设计表");
@@ -18,7 +17,7 @@ public class preDesignDataSer implements preDesignDataInter{
         List<String> idList = new ArrayList<String>();
         int excelRows = preDesignData.getRows();
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
 
@@ -40,7 +39,7 @@ public class preDesignDataSer implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         List<String> numList = new ArrayList<String>();
 
-        for(int i = 4 ; i<=excelRows-1;i++){
+        for(int i = 4 ; i<=excelRows;i++){
             String Li = preDesignData.getExcelDateByIndex(i - 1, 12 - 1);
 
             numList.add(Li);
@@ -57,7 +56,7 @@ public class preDesignDataSer implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         List<String> priceList = new ArrayList<String>();
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
@@ -76,10 +75,6 @@ public class preDesignDataSer implements preDesignDataInter{
                 char firstNum = a.charAt(0);
                 if (firstNum == '9' && !a.equals("90010106000000000004")) {
                     String Price = priceData.getMultiCellByCaseName(Ai, Ii, Ji, 0, 2, 3, 6);
-                    System.out.println(Price);
-                    System.out.println(Ai);
-                    System.out.println(Ii);
-                    System.out.println(Ji);
                     Double d = Double.valueOf(Price) * Double.valueOf(Li);
                     BigDecimal bigDecimal = new BigDecimal(d);
                     double dou = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -192,7 +187,7 @@ public class preDesignDataSer implements preDesignDataInter{
 
 
         String path = "D:\\seleniumWork\\excel数据表格\\" + list1.get(0) +"\\" + list1.get(0) + "-预设计表.xlsx";
-        preDesignDataSer preDesignDataSer = new preDesignDataSer();
+        preDesignDataInf preDesignDataSer = new preDesignDataInf();
         List<String> list = preDesignDataSer.getIdList(path);
         System.out.println(list+ " 长度: " + list.size());
         List<String> list2 = preDesignDataSer.getPriceList(path);
