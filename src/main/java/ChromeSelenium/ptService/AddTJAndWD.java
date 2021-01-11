@@ -39,13 +39,15 @@ public class AddTJAndWD {
         List<String> wd = new ArrayList<String>();
         //外电安全生产费
         List<String> wda = new ArrayList<String>();
+        List<String> wdj = new ArrayList<String>();
 
         for(int i = 2;i<=excelRows;i++){
             name.add(excelData.getExcelDateByIndex(i-1,1-1));
             tj.add(excelData.getExcelDateByIndex(i-1,3-1));
             tja.add(excelData.getExcelDateByIndex(i-1,4-1));
-            wd.add(excelData.getExcelDateByIndex(i-1,5-1));
-            wda.add(excelData.getExcelDateByIndex(i-1,6-1));
+            wd.add(excelData.getExcelDateByIndex(i-1,3-1));
+            wda.add(excelData.getExcelDateByIndex(i-1,4-1));
+            wdj.add(excelData.getExcelDateByIndex(i-1,5-1));
         }
 
         List<String> record = preDesignDataSer.getRecord();
@@ -58,17 +60,6 @@ public class AddTJAndWD {
                 //设计表路径
                 String preDesignPath = "D:\\seleniumWork\\excel数据表格\\" + name.get(i)  +"\\" + name.get(i) + "-预设计表.xlsx";
 
-                //编号表
-                List<String> idList = preDesignDataSer.getIdList(preDesignPath);
-                //数量表
-                List<String> numList = preDesignDataSer.getNumsList(preDesignPath);
-
-                System.out.println(idList + " 长度 " + idList.size());
-                System.out.println(numList + " 长度 " + numList.size());
-
-                int preDesignRows = idList.size();
-                System.out.println("一共要处理的物资/服务有 ：  " + preDesignRows + "  个!");
-
                 doNYByTitle(webDriver);
                 findTittletext(webDriver, name.get(i));
 
@@ -76,6 +67,7 @@ public class AddTJAndWD {
                 String tj2 = tja.get(i);
                 String wd1 = wd.get(i);
                 String wd2 = wda.get(i);
+                String wd3 = wdj.get(i);
 
                 //处理第一个alert
                 Thread.sleep(7000);
@@ -83,7 +75,7 @@ public class AddTJAndWD {
 
                 Thread.sleep(1000);
 
-                theService(webDriver, idList, numList,tj1,tj2,wd1,wd2);
+                theService(webDriver,tj1,tj2,wd1,wd2,wd3);
 
                 Thread.sleep(1000);
 
@@ -97,23 +89,19 @@ public class AddTJAndWD {
 
     }
 
-    public static void theService(WebDriver webDriver, List<String> idList, List<String> numList, String tj,String tja,String wd,String wda) throws InterruptedException, AWTException {
+    public static void theService(WebDriver webDriver, String tj,String tja,String wd,String wda,String wdj) throws InterruptedException, AWTException {
         //                模块服务清单选择服务
         clickSelectService(webDriver);
-        for (int i = 0; i< idList.size(); i++){
-            String pdID = idList.get(i);
-            String pdNUM = numList.get(i);
 
 
-            System.out.println(pdID + "  :   " + pdNUM);
 
+//                Thread.sleep(1000);
+//                buyService(webDriver,"90010110180000000002",tj,tja);
                 Thread.sleep(1000);
-                buyService(webDriver,"90010110180000000002",tj,tja);
-                Thread.sleep(1000);
-                buyService(webDriver,"900101060606",wd,wda);
+                buyService(webDriver,"900101060606",wd,wda,wdj);
 
-                break;
-        }
+
+
     }
 
     public static void closeWindow(WebDriver webDriver) throws InterruptedException {
@@ -122,7 +110,7 @@ public class AddTJAndWD {
     }
 
     //购买物资(改数量模式)
-    public static void buyService(WebDriver webDriver,String serviceId,String price,String securityPrice) throws InterruptedException,AWTException{
+    public static void buyService(WebDriver webDriver,String serviceId,String price,String securityPrice,String jizhun) throws InterruptedException,AWTException{
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/service/Detailgrid')]")));
 
@@ -151,7 +139,7 @@ public class AddTJAndWD {
                     Thread.sleep(500);
                     pressEnter();
 
-                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[14]")).click();
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).click();
                     Thread.sleep(500);
                     //数量改
                     webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(securityPrice);
@@ -159,9 +147,17 @@ public class AddTJAndWD {
                     pressEnter();
 
 
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).click();
+                    Thread.sleep(500);
+                    //数量改
+                    webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(jizhun);
+                    Thread.sleep(500);
+                    pressEnter();
+
+
                 Thread.sleep(500);
                 //单击保存
-                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
+                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/div/a/span")).click();
 
                 break;
             }
