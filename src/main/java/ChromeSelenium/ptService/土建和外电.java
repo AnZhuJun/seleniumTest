@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 //普通项目上传附件12.11新需求外电地勘费用及安全生产费
-public class AddTJAndWD {
+public class 土建和外电 {
     public static void main(String[] args) throws AWTException, InterruptedException, IOException {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
