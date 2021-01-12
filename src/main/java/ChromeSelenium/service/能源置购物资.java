@@ -15,7 +15,7 @@ import java.util.Set;
 
 
 //能源项目置购物资
-public class EquipmentMaterPreDesign {
+public class 能源置购物资 {
     public static void main(String[] args) throws AWTException, InterruptedException, IOException {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();

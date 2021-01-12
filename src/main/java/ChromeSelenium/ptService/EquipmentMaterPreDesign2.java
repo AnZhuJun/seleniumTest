@@ -49,7 +49,7 @@ public class EquipmentMaterPreDesign2 {
                 //编号表
                 List<String> idList = preDesignDataSer.getIdList(preDesignPath);
                 //价格表
-                List<String> priceList = preDesignDataSer.getPriceList(preDesignPath);
+                List<String> priceList = preDesignDataSer.getPriceList9(preDesignPath);
                 //数量表
                 List<String> numList = preDesignDataSer.getNumsList(preDesignPath);
                 //外电价格(特殊)

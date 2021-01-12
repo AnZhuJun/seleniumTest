@@ -105,9 +105,9 @@ public class 元旦后修改普通置购物资 {
 
                 Thread.sleep(1000);
                 if (pdID.equals("90010106000000000004")){
-                    buyService(webDriver,pdID, outPrice);
+                    buyServiceOut(webDriver,pdID, outPrice);
                 }else {
-                    buyService2(webDriver, pdID, pdNUM,pdPrice);
+                    buyService(webDriver, pdID, pdNUM,pdPrice);
                 }
 
             }else{
@@ -253,7 +253,7 @@ public class 元旦后修改普通置购物资 {
     }
 
     //购买物资(改数量模式)
-    public static void buyService2(WebDriver webDriver,String serviceId,String nums,String Price) throws InterruptedException,AWTException{
+    public static void buyService(WebDriver webDriver, String serviceId, String nums, String Price) throws InterruptedException,AWTException{
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/service/Detailgrid')]")));
 
@@ -309,8 +309,6 @@ public class 元旦后修改普通置购物资 {
 
                     Thread.sleep(500);
                     pressEnter();
-
-
                 }else{
                     String[] price2 = nums.split(",");
                     //当为外电的时候
@@ -340,7 +338,7 @@ public class 元旦后修改普通置购物资 {
     }
 
     //购买物资(改数量模式)
-    public static void buyService(WebDriver webDriver,String serviceId,String nums) throws InterruptedException,AWTException{
+    public static void buyServiceOut(WebDriver webDriver, String serviceId, String nums) throws InterruptedException,AWTException{
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/service/Detailgrid')]")));
 

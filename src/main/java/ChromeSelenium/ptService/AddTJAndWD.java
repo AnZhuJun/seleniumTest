@@ -225,7 +225,7 @@ public class AddTJAndWD {
         Set<String> tempwh = webDriver.getWindowHandles();
         List<String> tempall = new ArrayList<String>(tempwh);
         webDriver.switchTo().window(tempall.get(0));
-        webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
+        webDriver.get("http://4a.chinatowercom.cn:20000/uac/home/soaprequest?s=100076&r=200001");
         webDriver.findElement(By.xpath("//span[contains(.,'设计监理施工人员')]")).click();
 
         Set<String> windowhandle = webDriver.getWindowHandles();

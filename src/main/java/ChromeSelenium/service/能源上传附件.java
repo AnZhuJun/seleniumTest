@@ -7,20 +7,19 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static ChromeSelenium.ptService.TowerDemo.cleanAllCookies;
-import static ChromeSelenium.ptService.TowerDemo.logIn;
+import static ChromeSelenium.ptService.普通项目上传附件.cleanAllCookies;
+import static ChromeSelenium.ptService.普通项目上传附件.logIn;
 import static java.lang.Thread.sleep;
 
 
 //能源项目上传附件
-public class TowerDemo {
+public class 能源上传附件 {
     public static void main(String[] args) throws Exception {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();

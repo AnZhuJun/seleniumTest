@@ -18,18 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 //普通项目上传附件
-public class TowerDemo {
+public class 普通项目上传附件 {
     public static void main(String[] args) throws Exception {
-//        Scanner input = new Scanner(System.in);
-//        System.out.println("please input your key");
-//        String account = input.nextLine();
-//        System.out.println("please input your password");
-//        String password = input.nextLine();
-
-
-//        if (account.equals("123") && password.equals("123")) {
-
-
             System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
             ChromeOptions options = new ChromeOptions();
             ExcelData excelData = new ExcelData("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1");
@@ -75,7 +65,7 @@ public class TowerDemo {
 
                     for (int index = 0; index < fileNameType.size(); index++) {
 
-                        Thread.sleep(1400);
+                        Thread.sleep(1000);
                         uoloadFile(webDriver, fileNameType.get(index));
                     }
 
@@ -106,7 +96,7 @@ public class TowerDemo {
     public static void logIn(WebDriver webDriver) throws InterruptedException {
         webDriver.findElement(By.id("username")).sendKeys("18911786690");
         webDriver.findElement(By.id("password")).sendKeys("gpDI510630");
-        Thread.sleep(300);
+        Thread.sleep(500);
         webDriver.findElement(By.xpath("//html/body/div[1]/div[2]/div[2]/div[2]/input[2]")).click();
 
     }

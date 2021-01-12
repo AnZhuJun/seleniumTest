@@ -18,7 +18,7 @@ public class preDesignDataSer implements preDesignDataInter{
         List<String> idList = new ArrayList<String>();
         int excelRows = preDesignData.getRows();
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
 
@@ -40,7 +40,7 @@ public class preDesignDataSer implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         List<String> numList = new ArrayList<String>();
 
-        for(int i = 4 ; i<=excelRows-1;i++){
+        for(int i = 4 ; i<=excelRows;i++){
             String Li = preDesignData.getExcelDateByIndex(i - 1, 12 - 1);
 
             numList.add(Li);
@@ -58,7 +58,7 @@ public class preDesignDataSer implements preDesignDataInter{
         List<String> priceList = new ArrayList<String>();
 
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
@@ -82,7 +82,7 @@ public class preDesignDataSer implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         List<String> priceList = new ArrayList<String>();
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
@@ -126,7 +126,7 @@ public class preDesignDataSer implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         String price = "";
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
@@ -225,6 +225,6 @@ public class preDesignDataSer implements preDesignDataInter{
         List<String> list3 = preDesignDataSer.getNumsList(path);
         System.out.println(list3 + " 长度: " + list3.size());
         String price = preDesignDataSer.getOutEle(path);
-        System.out.println(price );
+        System.out.println(price);
     }
 }

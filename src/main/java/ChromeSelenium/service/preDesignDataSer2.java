@@ -136,7 +136,7 @@ public class preDesignDataSer2 implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         String price = "";
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);

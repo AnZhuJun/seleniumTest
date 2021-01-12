@@ -1,14 +1,12 @@
 package ChromeSelenium.tools;
 
-import ChromeSelenium.interf.preDesignDataInter;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class preDesignDataInf implements preDesignDataInter{
+public class preDesignDataInf{
 
     public List<String> getIdList(String path){
         ExcelData preDesignData = new ExcelData(path, "预设计表");
@@ -48,7 +46,7 @@ public class preDesignDataInf implements preDesignDataInter{
         return numList;
     }
 
-    public List<String> getPriceList(String path){
+    public List<String> getPriceList9(String path){
         ExcelData preDesignData = new ExcelData(path, "预设计表");
         ExcelData equipmentData = new ExcelData(path, "模块库");
         ExcelData priceData = new ExcelData(path, "价格库");
@@ -75,11 +73,12 @@ public class preDesignDataInf implements preDesignDataInter{
                 char firstNum = a.charAt(0);
                 if (firstNum == '9' && !a.equals("90010106000000000004")) {
                     String Price = priceData.getMultiCellByCaseName(Ai, Ii, Ji, 0, 2, 3, 6);
+                    String Price2 = priceData.getMultiCellByCaseName(Ai, Ii, Ji, 0, 2, 3, 7);
                     Double d = Double.valueOf(Price) * Double.valueOf(Li);
                     BigDecimal bigDecimal = new BigDecimal(d);
                     double dou = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                     String price = String.valueOf(dou);
-                    priceList.add(price);
+                    priceList.add(price+"+"+Price2);
                 }
             }
         }
@@ -87,6 +86,86 @@ public class preDesignDataInf implements preDesignDataInter{
         return priceList;
     }
 
+
+    public List<String> getPriceList01(String path){
+        ExcelData preDesignData = new ExcelData(path, "预设计表");
+        ExcelData equipmentData = new ExcelData(path, "模块库");
+        ExcelData priceData = new ExcelData(path, "价格库");
+
+        int excelRows = preDesignData.getRows();
+        List<String> priceList = new ArrayList<String>();
+
+        for (int i = 4;i<=excelRows;i++) {
+            String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
+            String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
+            String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
+            String Ji = preDesignData.getExcelDateByIndex(i - 1, 10 - 1);
+            String Li = preDesignData.getExcelDateByIndex(i - 1, 12 - 1);
+            String Mi = preDesignData.getExcelDateByIndex(i - 1, 13 - 1);
+            List<String> idList = new ArrayList<String>();
+
+            if(Di.startsWith("V")) {
+                idList.add(equipmentData.getCellByCaseName(Ii, 0, 2));
+            }else {
+                idList.add(Di);
+            }
+
+            for (String a : idList
+            ) {
+                char firstNum = a.charAt(0);
+                if (firstNum == '0' || firstNum == '1' ) {
+                    priceList.add(Mi);
+                }
+            }
+        }
+
+        return priceList;
+    }
+
+    public List<String> getPriceList(String path){
+        ExcelData preDesignData = new ExcelData(path, "预设计表");
+        ExcelData equipmentData = new ExcelData(path, "模块库");
+        ExcelData priceData = new ExcelData(path, "价格库");
+
+        int excelRows = preDesignData.getRows();
+        List<String> priceList = new ArrayList<String>();
+
+        for (int i = 4;i<=excelRows;i++) {
+            String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
+            String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
+            String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
+            String Ji = preDesignData.getExcelDateByIndex(i - 1, 10 - 1);
+            String Li = preDesignData.getExcelDateByIndex(i - 1, 12 - 1);
+            String Mi = preDesignData.getExcelDateByIndex(i - 1, 13 - 1);
+            List<String> idList = new ArrayList<String>();
+
+            if(Di.startsWith("V")) {
+                idList.add(equipmentData.getCellByCaseName(Ii, 0, 2));
+            }else {
+                idList.add(Di);
+            }
+
+            for (String a : idList
+            ) {
+                char firstNum = a.charAt(0);
+                if (firstNum == '0' || firstNum == '1' ) {
+                    priceList.add(Mi);
+                }else if (firstNum == '9' && !a.equals("90010106000000000004")) {
+                    String Price = priceData.getMultiCellByCaseName(Ai, Ii, Ji, 0, 2, 3, 6);
+                    String Price2 = priceData.getMultiCellByCaseName(Ai, Ii, Ji, 0, 2, 3, 7);
+                    Double d = Double.valueOf(Price) * Double.valueOf(Li);
+                    BigDecimal bigDecimal = new BigDecimal(d);
+                    double dou = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    String price = String.valueOf(dou);
+                    priceList.add(price+","+Price2);
+                }else if (a.equals("90010106000000000004")){
+                    priceList.add(getOutEle(path));
+                }
+            }
+        }
+
+        return priceList;
+    }
 
     public String getOutEle(String path){
         ExcelData preDesignData = new ExcelData(path, "预设计表");
@@ -96,7 +175,7 @@ public class preDesignDataInf implements preDesignDataInter{
         int excelRows = preDesignData.getRows();
         String price = "";
 
-        for (int i = 4;i<=excelRows-1;i++) {
+        for (int i = 4;i<=excelRows;i++) {
             String Ai = preDesignData.getExcelDateByIndex(i - 1, 1 - 1);
             String Di = preDesignData.getExcelDateByIndex(i - 1, 4 - 1);
             String Ii = preDesignData.getExcelDateByIndex(i - 1, 9 - 1);
@@ -178,7 +257,6 @@ public class preDesignDataInf implements preDesignDataInter{
 
 
     public static void main(String[] args) {
-
         List<String> list1 = getName();
         List<String> list11 = getRecord();
 
@@ -188,13 +266,20 @@ public class preDesignDataInf implements preDesignDataInter{
 
         String path = "D:\\seleniumWork\\excel数据表格\\" + list1.get(0) +"\\" + list1.get(0) + "-预设计表.xlsx";
         preDesignDataInf preDesignDataSer = new preDesignDataInf();
+
+
+        List<String> total = preDesignDataSer.getPriceList(path);
+        System.out.println(total+ " 长度: " + total.size());
+
         List<String> list = preDesignDataSer.getIdList(path);
         System.out.println(list+ " 长度: " + list.size());
-        List<String> list2 = preDesignDataSer.getPriceList(path);
+        List<String> list2 = preDesignDataSer.getPriceList9(path);
         System.out.println(list2+ " 长度: " + list2.size());
+        List<String> list4 = preDesignDataSer.getPriceList01(path);
+        System.out.println(list4+ " 长度: " + list4.size());
         List<String> list3 = preDesignDataSer.getNumsList(path);
         System.out.println(list3 + " 长度: " + list3.size());
         String price = preDesignDataSer.getOutEle(path);
-        System.out.println(price );
+        System.out.println(price);
     }
 }

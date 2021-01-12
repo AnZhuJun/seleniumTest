@@ -2,6 +2,7 @@ package ChromeSelenium.ptService;
 
 import ChromeSelenium.service.preDesignDataSer;
 import ChromeSelenium.tools.ExcelData;
+import ChromeSelenium.tools.preDesignDataInf;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 //普通项目上传附件
-public class EquipmentMaterPreDesign {
+public class 普通项目置购物资模块 {
     public static void main(String[] args) throws AWTException, InterruptedException, IOException {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
@@ -40,7 +41,7 @@ public class EquipmentMaterPreDesign {
 
         for (int i = 0;i<name.size();i++) {
             if (record.get(i).equals("0.0") || record.get(i).equals("0")) {
-                preDesignDataSer preDesignDataSer = new preDesignDataSer();
+                preDesignDataInf preDesignDataSer = new preDesignDataInf();
 
                 //设计表路径
                 String preDesignPath = "D:\\seleniumWork\\excel数据表格\\" + name.get(i)  +"\\" + name.get(i) + "-预设计表.xlsx";
@@ -48,7 +49,7 @@ public class EquipmentMaterPreDesign {
                 //编号表
                 List<String> idList = preDesignDataSer.getIdList(preDesignPath);
                 //价格表
-                List<String> priceList = preDesignDataSer.getPriceList2(preDesignPath);
+                List<String> priceList = preDesignDataSer.getPriceList(preDesignPath);
                 //数量表
                 List<String> numList = preDesignDataSer.getNumsList(preDesignPath);
                 //外电价格(特殊)
@@ -70,18 +71,16 @@ public class EquipmentMaterPreDesign {
 
                 Thread.sleep(1000);
 
-                theService(webDriver, idList, numList, outPrice);
+//                theService(webDriver, idList, numList, outPrice,priceList);
+//
+//                Thread.sleep(1000);
+//                closeWindow(webDriver);
 
-                Thread.sleep(1000);
-                closeWindow(webDriver);
-
-                theJiaService(webDriver, idList, numList);
+                theJiaService(webDriver, idList, numList,priceList);
 
                 excelData.writeExcelDateByIndex(excelPath,excelSheet,i+1,2-1,"1");
 
                 closeNYDetail(webDriver);
-
-
             }else {
                 continue;
             }
@@ -89,12 +88,13 @@ public class EquipmentMaterPreDesign {
 
     }
 
-    public static void theService(WebDriver webDriver, List<String> idList, List<String> numList, String outPrice) throws InterruptedException, AWTException {
+    public static void theService(WebDriver webDriver, List<String> idList, List<String> numList, String outPrice,List<String> priceList) throws InterruptedException, AWTException {
         //模块服务清单选择服务
         clickSelectService(webDriver);
         for (int i = 0; i< idList.size(); i++){
             String pdID = idList.get(i);
             String pdNUM = numList.get(i);
+            String pdPrice = priceList.get(i);
 
             System.out.println(pdID + "  :   " + pdNUM);
 
@@ -102,9 +102,9 @@ public class EquipmentMaterPreDesign {
 
                 Thread.sleep(1000);
                 if (pdID.equals("90010106000000000004")){
-                    buyService(webDriver,pdID, outPrice);
+                    buyService(webDriver,pdID,"1.00",outPrice);
                 }else {
-                    buyService2(webDriver, pdID, pdNUM);
+                    buyService(webDriver, pdID, pdNUM,pdPrice);
                 }
 
             }else{
@@ -113,19 +113,19 @@ public class EquipmentMaterPreDesign {
         }
     }
 
-    public static void theJiaService(WebDriver webDriver, List<String> idList, List<String> numList) throws InterruptedException, AWTException {
+    public static void theJiaService(WebDriver webDriver, List<String> idList, List<String> numList,List<String> priceList) throws InterruptedException, AWTException {
         //甲供设备材料选择物资
         clickJiaService(webDriver);
         Thread.sleep(1000);
         for (int i = 0; i< idList.size(); i++){
             String pdID = idList.get(i);
             String pdNUM = numList.get(i);
-
+            String price = priceList.get(i);
             System.out.println(pdID + "  :   " + pdNUM);
 
-            if (pdID.startsWith("0")) {
+            if (pdID.startsWith("0") ||pdID.startsWith("1")) {
                 Thread.sleep(1000);
-                buyJiaService(webDriver, pdID, pdNUM);
+                buyJiaService(webDriver, pdID, pdNUM,price);
             }else{
                 continue;
             }
@@ -138,7 +138,7 @@ public class EquipmentMaterPreDesign {
     }
 
     //购买甲供物资
-    public static void buyJiaService(WebDriver webDriver,String serviceId,String nums) throws InterruptedException, AWTException {
+    public static void buyJiaService(WebDriver webDriver,String serviceId,String nums,String price) throws InterruptedException, AWTException {
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/product/Detailgrid')]")));
 
@@ -162,10 +162,10 @@ public class EquipmentMaterPreDesign {
         Thread.sleep(500);
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
 
+                //将数量改为2.0000
                 if (!nums.equals("1.0")) {
-                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).click();
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[7]")).click();
                     Thread.sleep(500);
-                    //将数量改为2.0000
                     webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(nums);
                     Thread.sleep(500);
                     pressEnter();
@@ -173,20 +173,33 @@ public class EquipmentMaterPreDesign {
 
                 Thread.sleep(500);
 
-                String temp = webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[13]")).getText();
-                System.out.println(temp);
-                Thread.sleep(500);
-                if (temp.equals("0.0000") || temp.equals("0.000") ||temp.equals("0.00") ||temp.equals("0.0") ||temp.equals("0"))
-                {
-                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[13]")).click();
-                webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys("1.0");
-                Thread.sleep(500);
-                pressEnter();
-                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
+                String priceTemp =webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).getText();
+                if (!priceTemp.equals(" ") && (priceTemp.equals("0") || priceTemp.equals("0.0") || priceTemp.equals("0.00"))) {
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
+                    Thread.sleep(500);
+                    webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price);
+                    Thread.sleep(500);
+                    pressEnter();
                 }
 
+
+/*
+单位计量
+ */
+//                String temp = webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[13]")).getText();
+//                System.out.println(temp);
+//                Thread.sleep(500);
+//                if (temp.equals("0.0000") || temp.equals("0.000") ||temp.equals("0.00") ||temp.equals("0.0") ||temp.equals("0"))
+//                {
+//                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[13]")).click();
+//                webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys("1.0");
+//                Thread.sleep(500);
+//                pressEnter();
+//                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
+//                }
+
                 Thread.sleep(500);
-                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/a/span")).click();
+                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/div/a/span")).click();
                 break;
             }
         }
@@ -197,7 +210,7 @@ public class EquipmentMaterPreDesign {
     }
 
     //购买物资(改数量模式)
-    public static void buyService2(WebDriver webDriver,String serviceId,String nums) throws InterruptedException,AWTException{
+    public static void buyService(WebDriver webDriver, String serviceId, String nums,String Price) throws InterruptedException,AWTException{
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/service/Detailgrid')]")));
 
@@ -208,7 +221,7 @@ public class EquipmentMaterPreDesign {
         //单击查询
         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr/td[3]/a[1]/span")).click();
 
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         //单击，选择第一行（单击名称列）
         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[1]/div/div/div[2]/div/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[3]/td[4]")).click();
 
@@ -218,25 +231,60 @@ public class EquipmentMaterPreDesign {
 
         for(int i = 3;i<100;i++) {
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
-                if(!serviceId.equals("90010106000000000004") && !nums.equals("1.0")){
-                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[7]")).click();
-                    Thread.sleep(500);
+                if(!serviceId.equals("90010106000000000004")){
+                    String[] price = Price.split(",");
+                    System.out.println(price[0] + " , " + price[1]);
+
                     //将数量改为2.0000
-                    webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(nums);
+                    if (!nums.equals("1") && !nums.equals("1.0") && !nums.equals("1.00") ) {
+                        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[7]")).click();
+                        Thread.sleep(500);
+                        webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(nums);
+                        pressEnter();
+                    }
+
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
+                    Thread.sleep(500);
+                    webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price[0]);
+                    pressEnter();
+
+                    String temp =webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).getText();
+                    System.out.println(temp);
+                    if (!temp.equals(" ")) {
+                        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).click();
+                        Thread.sleep(500);
+                        webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price[1]);
+                        pressEnter();
+                    }
+
+
+                    String temp1 = webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).getText();
+                    if(temp1.equals("1.00")) {
+                        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).click();
+                        Thread.sleep(500);
+                        webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price[0]);
+                        pressEnter();
+                    }
+
                     Thread.sleep(500);
                     pressEnter();
-                }else if (serviceId.equals("90010106000000000004")){
-                    String[] price2 = nums.split(",");
+                }else{
+                    String[] price2 = Price.split(",");
                     //当为外电的时候
                     webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
                     Thread.sleep(500);
                     webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price2[0]);
                     Thread.sleep(500);
-                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[14]")).click();
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).click();
                     Thread.sleep(500);
                     webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price2[1]);
                     Thread.sleep(500);
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).click();
+                    Thread.sleep(500);
+                    webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price2[0]);
+                    Thread.sleep(500);
                     pressEnter();
+
                 }
 
                 Thread.sleep(500);
@@ -253,7 +301,7 @@ public class EquipmentMaterPreDesign {
     }
 
     //购买物资(改数量模式)
-    public static void buyService(WebDriver webDriver,String serviceId,String nums) throws InterruptedException,AWTException{
+    public static void buyServiceOut(WebDriver webDriver, String serviceId, String nums) throws InterruptedException,AWTException{
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/service/Detailgrid')]")));
 
@@ -264,7 +312,7 @@ public class EquipmentMaterPreDesign {
         //单击查询
         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr/td[3]/a[1]/span")).click();
 
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         //单击，选择第一行（单击名称列）
         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[1]/div/div/div[2]/div/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[3]/td[4]")).click();
 
@@ -368,6 +416,7 @@ public class EquipmentMaterPreDesign {
         webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
         webDriver.findElement(By.xpath("//span[contains(.,'设计监理施工人员')]")).click();
 
+        Thread.sleep(1000);
         Set<String> windowhandle = webDriver.getWindowHandles();
         List<String> allWindows = new ArrayList<String>(windowhandle);
         webDriver.switchTo().window(allWindows.get(1));

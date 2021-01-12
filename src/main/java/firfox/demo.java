@@ -5,8 +5,6 @@ import ChromeSelenium.tools.TakeFilePathAndName;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
-import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.awt.*;
 import java.io.IOException;
@@ -14,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static ChromeSelenium.ptService.EquipmentMaterPreDesign.pressEnter;
+import static ChromeSelenium.ptService.普通项目置购物资模块.pressEnter;
 
 public class demo {
     public static void main(String[] args) throws InterruptedException, AWTException, IOException {
