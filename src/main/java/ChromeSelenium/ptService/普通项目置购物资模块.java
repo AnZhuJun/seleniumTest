@@ -38,7 +38,6 @@ public class 普通项目置购物资模块 {
 
         List<String> record = preDesignDataSer.getRecord();
 
-
         for (int i = 0;i<name.size();i++) {
             if (record.get(i).equals("0.0") || record.get(i).equals("0")) {
                 preDesignDataInf preDesignDataSer = new preDesignDataInf();
@@ -66,15 +65,15 @@ public class 普通项目置购物资模块 {
                 findTittletext(webDriver, name.get(i));
 
                 //处理第一个alert
-                Thread.sleep(7000);
+                Thread.sleep(9000);
                 pressEnter();
 
                 Thread.sleep(1000);
 
-//                theService(webDriver, idList, numList, outPrice,priceList);
-//
-//                Thread.sleep(1000);
-//                closeWindow(webDriver);
+                theService(webDriver, idList, numList, outPrice,priceList);
+
+                Thread.sleep(1000);
+                closeWindow(webDriver);
 
                 theJiaService(webDriver, idList, numList,priceList);
 
@@ -85,7 +84,6 @@ public class 普通项目置购物资模块 {
                 continue;
             }
         }
-
     }
 
     public static void theService(WebDriver webDriver, List<String> idList, List<String> numList, String outPrice,List<String> priceList) throws InterruptedException, AWTException {
@@ -99,14 +97,12 @@ public class 普通项目置购物资模块 {
             System.out.println(pdID + "  :   " + pdNUM);
 
             if (pdID.startsWith("9")) {
-
                 Thread.sleep(1000);
                 if (pdID.equals("90010106000000000004")){
                     buyService(webDriver,pdID,"1.00",outPrice);
                 }else {
                     buyService(webDriver, pdID, pdNUM,pdPrice);
                 }
-
             }else{
                 continue;
             }
@@ -203,10 +199,8 @@ public class 普通项目置购物资模块 {
                 break;
             }
         }
-
         Thread.sleep(500);
         webDriver.switchTo().defaultContent();
-
     }
 
     //购买物资(改数量模式)
@@ -243,10 +237,14 @@ public class 普通项目置购物资模块 {
                         pressEnter();
                     }
 
-                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
-                    Thread.sleep(500);
-                    webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price[0]);
-                    pressEnter();
+                    String jizhun = webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).getText();
+                    String trueJiZhun = split(jizhun);
+                    if(!trueJiZhun.equals("1.00") && !trueJiZhun.equals("0.00") && !trueJiZhun.equals("0") && !trueJiZhun.equals("0.0")) {
+                        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
+                        Thread.sleep(500);
+                        webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(trueJiZhun);
+                        pressEnter();
+                    }
 
                     String temp =webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[9]")).getText();
                     System.out.println(temp);
@@ -257,9 +255,7 @@ public class 普通项目置购物资模块 {
                         pressEnter();
                     }
 
-
-                    String temp1 = webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).getText();
-                    if(temp1.equals("1.00")) {
+                    if(jizhun.equals("1.00") || jizhun.equals("0.00")|| jizhun.equals("0") || jizhun.equals("0.0")) {
                         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).click();
                         Thread.sleep(500);
                         webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price[0]);
@@ -267,7 +263,6 @@ public class 普通项目置购物资模块 {
                     }
 
                     Thread.sleep(500);
-                    pressEnter();
                 }else{
                     String[] price2 = Price.split(",");
                     //当为外电的时候
@@ -284,7 +279,6 @@ public class 普通项目置购物资模块 {
                     webDriver.findElement(By.xpath("//html/body/div[3]/span/span/input")).sendKeys(price2[0]);
                     Thread.sleep(500);
                     pressEnter();
-
                 }
 
                 Thread.sleep(500);
@@ -294,13 +288,11 @@ public class 普通项目置购物资模块 {
                 break;
             }
         }
-
         Thread.sleep(500);
-
         webDriver.switchTo().defaultContent();
     }
 
-    //购买物资(改数量模式)
+    //购买物资
     public static void buyServiceOut(WebDriver webDriver, String serviceId, String nums) throws InterruptedException,AWTException{
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/module/design/service/Detailgrid')]")));
@@ -359,13 +351,10 @@ public class 普通项目置购物资模块 {
     public static void init(){
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
-
         options.setExperimentalOption("debuggerAddress", "127.0.0.1:9222");
         WebDriver webDriver = new ChromeDriver(options);
-
         webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
     }
-
 
     public static void closeNYDetail(WebDriver webDriver) {
         Set<String> windowhandle = webDriver.getWindowHandles();
@@ -376,8 +365,6 @@ public class 普通项目置购物资模块 {
         webDriver.switchTo().window(allWindows.get(1)).close();
     }
 
-
-
     //服务模块选择物资
     public static void clickSelectService(WebDriver webDriver) throws InterruptedException, AWTException {
         webDriver.switchTo().frame("NewFileServ");
@@ -386,11 +373,8 @@ public class 普通项目置购物资模块 {
         webDriver.findElement(By.xpath("//html/body/div[2]/table/tbody/tr/td[7]/a[2]/span")).click();
         Thread.sleep(500);
         pressEnter();
-
         webDriver.switchTo().defaultContent();
     }
-
-
 
     //单击到甲供设备材料选择物资
     public static void clickJiaService(WebDriver webDriver) throws InterruptedException {
@@ -407,7 +391,6 @@ public class 普通项目置购物资模块 {
         //切换iframe
         webDriver.switchTo().defaultContent();
     }
-
 
     public static void doNYByTitle(WebDriver webDriver) throws InterruptedException {
         Set<String> tempwh = webDriver.getWindowHandles();
@@ -426,7 +409,6 @@ public class 普通项目置购物资模块 {
         webDriver.switchTo().frame("pageSet");
         webDriver.switchTo().frame("mainframe");
 //        webDriver.findElement(By.id("mini-1$2")).click();
-
 //        webDriver.findElement(By.id("mini-1$1")).click();
         webDriver.switchTo().frame("tab1");
     }
@@ -437,7 +419,6 @@ public class 普通项目置购物资模块 {
         //通过taskTittletext查询
         webDriver.findElement(By.id("taskTitle$text")).sendKeys(taskTitletext);
         webDriver.findElement(By.linkText("查询")).click();
-
         Thread.sleep(2000);
         webDriver.findElement(By.id("taskDataGrid1")).findElement(By.xpath(".//div/div[2]/div[4]/div[2]/div/table/tbody/tr[3]/td[2]/div/a")).click();
         Thread.sleep(2000);
@@ -446,13 +427,24 @@ public class 普通项目置购物资模块 {
         webDriver.switchTo().window(allWindows.get(2));
     }
 
-
     public static void pressEnter() throws InterruptedException, AWTException {
         Robot r = new Robot();
         r.keyPress(KeyEvent.VK_ENTER);
         r.keyRelease(KeyEvent.VK_ENTER);
     }
 
+    public static String split(String str)
+    {
+        String a = "";
+        String b = "";
+        String[] stringList = new String[5];
+        stringList = str.split(",");
+        for(int i = 0;i<stringList.length;i++)
+        {
+            a = a + stringList[i];
+        }
+        return a;
+    }
     public static void printString(String string){
         System.out.println(string);
     }

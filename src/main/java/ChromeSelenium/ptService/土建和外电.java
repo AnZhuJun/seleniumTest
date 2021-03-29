@@ -35,6 +35,7 @@ public class 土建和外电 {
         List<String> tj = new ArrayList<String>();
         //土建安全生产费
         List<String> tja = new ArrayList<String>();
+        List<String> tjj = new ArrayList<String>();
         //外电
         List<String> wd = new ArrayList<String>();
         //外电安全生产费
@@ -43,15 +44,15 @@ public class 土建和外电 {
 
         for(int i = 2;i<=excelRows;i++){
             name.add(excelData.getExcelDateByIndex(i-1,1-1));
-            tj.add(excelData.getExcelDateByIndex(i-1,3-1));
-            tja.add(excelData.getExcelDateByIndex(i-1,4-1));
+            tj.add(excelData.getExcelDateByIndex(i-1,6-1));
+            tja.add(excelData.getExcelDateByIndex(i-1,7-1));
+            tjj.add(excelData.getExcelDateByIndex(i-1,8-1));
             wd.add(excelData.getExcelDateByIndex(i-1,3-1));
             wda.add(excelData.getExcelDateByIndex(i-1,4-1));
             wdj.add(excelData.getExcelDateByIndex(i-1,5-1));
         }
 
         List<String> record = preDesignDataSer.getRecord();
-
 
         for (int i = 0;i<name.size();i++) {
             if (record.get(i).equals("0.0") || record.get(i).equals("0")) {
@@ -65,17 +66,18 @@ public class 土建和外电 {
 
                 String tj1 = tj.get(i);
                 String tj2 = tja.get(i);
+                String tj3 = tjj.get(i);
                 String wd1 = wd.get(i);
                 String wd2 = wda.get(i);
                 String wd3 = wdj.get(i);
 
                 //处理第一个alert
-                Thread.sleep(7000);
+                Thread.sleep(8000);
                 pressEnter();
 
                 Thread.sleep(1000);
 
-                theService(webDriver,tj1,tj2,wd1,wd2,wd3);
+                theService(webDriver,tj1,tj2,tj3,wd1,wd2,wd3);
 
                 Thread.sleep(1000);
 
@@ -86,22 +88,17 @@ public class 土建和外电 {
                 continue;
             }
         }
-
     }
 
-    public static void theService(WebDriver webDriver, String tj,String tja,String wd,String wda,String wdj) throws InterruptedException, AWTException {
-        //                模块服务清单选择服务
+    public static void theService(WebDriver webDriver, String tj,String tja,String tjj,String wd,String wda,String wdj) throws InterruptedException, AWTException {
+        //模块服务清单选择服务
         clickSelectService(webDriver);
 
+        Thread.sleep(1000);
+        buyService(webDriver,"90010110180000000002",tj,tja,tjj);
 
-
-//                Thread.sleep(1000);
-//                buyService(webDriver,"90010110180000000002",tj,tja);
-                Thread.sleep(1000);
-                buyService(webDriver,"900101060606",wd,wda,wdj);
-
-
-
+        Thread.sleep(1000);
+        buyService(webDriver,"900101060606",wd,wda,wdj);
     }
 
     public static void closeWindow(WebDriver webDriver) throws InterruptedException {
@@ -131,7 +128,6 @@ public class 土建和外电 {
 
         for(int i = 3;i<100;i++) {
             if (webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText().equals(serviceId)) {//单击数量输入框
-
                     webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[8]")).click();
                     Thread.sleep(500);
                     //数量改
@@ -146,7 +142,6 @@ public class 土建和外电 {
                     Thread.sleep(500);
                     pressEnter();
 
-
                     webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[" + i + "]/td[10]")).click();
                     Thread.sleep(500);
                     //数量改
@@ -154,30 +149,25 @@ public class 土建和外电 {
                     Thread.sleep(500);
                     pressEnter();
 
+                    Thread.sleep(500);
+                    //单击保存
+                    webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/div/a/span")).click();
 
-                Thread.sleep(500);
-                //单击保存
-                webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[1]/div/a/span")).click();
-
-                break;
+                    break;
             }
         }
 
         Thread.sleep(500);
-
         webDriver.switchTo().defaultContent();
     }
 
     public static void init(){
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
-
         options.setExperimentalOption("debuggerAddress", "127.0.0.1:9222");
         WebDriver webDriver = new ChromeDriver(options);
-
         webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
     }
-
 
     public static void closeNYDetail(WebDriver webDriver) {
         Set<String> windowhandle = webDriver.getWindowHandles();
@@ -187,8 +177,6 @@ public class 土建和外电 {
         allWindows = new ArrayList<String>(windowhandle);
         webDriver.switchTo().window(allWindows.get(1)).close();
     }
-
-
 
     //服务模块选择物资
     public static void clickSelectService(WebDriver webDriver) throws InterruptedException, AWTException {
@@ -201,8 +189,6 @@ public class 土建和外电 {
 
         webDriver.switchTo().defaultContent();
     }
-
-
 
     //单击到甲供设备材料选择物资
     public static void clickJiaService(WebDriver webDriver) throws InterruptedException {
@@ -220,12 +206,11 @@ public class 土建和外电 {
         webDriver.switchTo().defaultContent();
     }
 
-
     public static void doNYByTitle(WebDriver webDriver) throws InterruptedException {
         Set<String> tempwh = webDriver.getWindowHandles();
         List<String> tempall = new ArrayList<String>(tempwh);
         webDriver.switchTo().window(tempall.get(0));
-        webDriver.get("http://4a.chinatowercom.cn:20000/uac/home/soaprequest?s=100076&r=200001");
+        webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
         webDriver.findElement(By.xpath("//span[contains(.,'设计监理施工人员')]")).click();
 
         Set<String> windowhandle = webDriver.getWindowHandles();
@@ -237,7 +222,6 @@ public class 土建和外电 {
         webDriver.switchTo().frame("pageSet");
         webDriver.switchTo().frame("mainframe");
 //        webDriver.findElement(By.id("mini-1$2")).click();
-
 //        webDriver.findElement(By.id("mini-1$1")).click();
         webDriver.switchTo().frame("tab1");
     }

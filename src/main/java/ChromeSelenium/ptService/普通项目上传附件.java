@@ -47,10 +47,10 @@ public class 普通项目上传附件 {
 // now you can click on clear data button
                     clearData.click();
 
-                    webDriver.manage().deleteAllCookies();
-                    String js = "window.localStorage.clear()";
-                    JavascriptExecutor javascriptExecutor = (JavascriptExecutor) webDriver;
-                    javascriptExecutor.executeScript(js);
+//                    webDriver.manage().deleteAllCookies();
+//                    String js = "window.localStorage.clear()";
+//                    JavascriptExecutor javascriptExecutor = (JavascriptExecutor) webDriver;
+//                    javascriptExecutor.executeScript(js);
 
                     webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
                     logIn(webDriver);
@@ -60,24 +60,56 @@ public class 普通项目上传附件 {
 
                     fileNameType = TakeFilePathAndName.getFile(Ai, 0);
 
-                    Thread.sleep(6000);
+                    System.out.println(fileNameType);
+
+                    Thread.sleep(8000);
                     pressEnter();
 
-                    for (int index = 0; index < fileNameType.size(); index++) {
-
+                    for (int index = 0; index < fileNameType.size()/2; index++) {
                         Thread.sleep(1000);
                         uoloadFile(webDriver, fileNameType.get(index));
                     }
 
-                    excelData.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1", i - 1, 2 - 1, "1");
+                    closeNYDetail(webDriver);
+//                    cleanAllCookies(webDriver);
+
+//                    webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
+
+                    Set<String> tempwh = webDriver.getWindowHandles();
+                    List<String> tempall = new ArrayList<String>(tempwh);
+                    webDriver.switchTo().window(tempall.get(0));
+                    webDriver.switchTo().defaultContent();
+                    webDriver.get("chrome://settings/clearBrowserData");
+                    webDriver.manage().window().maximize();
+                    JavascriptExecutor js2 = (JavascriptExecutor) webDriver;
+                    Thread.sleep(500);
+                    WebElement clearData2 = (WebElement) js2.executeScript("return document.body.querySelector('settings-ui').shadowRoot.querySelector('settings-main').shadowRoot.querySelector('settings-basic-page').shadowRoot.querySelector('settings-section > settings-privacy-page').shadowRoot.querySelector('settings-clear-browsing-data-dialog').shadowRoot.querySelector('#clearBrowsingDataDialog').querySelector('#clearBrowsingDataConfirm')");
+// now you can click on clear data button
+                    clearData2.click();
+
+                    webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
+                    logIn(webDriver);
+                    Thread.sleep(500);
+                    webDriver.get("http://4a.chinatowercom.cn:20000/uac/index");
+                    doNYByTitle(webDriver);
+                    findTittletext(webDriver, Ai);
+                    Thread.sleep(8000);
+                    pressEnter();
+
+                    for (int index = fileNameType.size()/2; index < fileNameType.size(); index++) {
+                        Thread.sleep(1000);
+                        uoloadFile(webDriver, fileNameType.get(index));
+                    }
+
                     closeNYDetail(webDriver);
                     cleanAllCookies(webDriver);
+
+                    excelData.writeExcelDateByIndex("D:\\seleniumWork\\excel数据表格\\excel1.xlsx", "sheet1", i - 1, 2 - 1, "1");
                 } else {
                     continue;
                 }
             }
 //        }
-
     }
 
     public static void cleanAllCookies(WebDriver webDriver) {
@@ -98,7 +130,6 @@ public class 普通项目上传附件 {
         webDriver.findElement(By.id("password")).sendKeys("gpDI510630");
         Thread.sleep(500);
         webDriver.findElement(By.xpath("//html/body/div[1]/div[2]/div[2]/div[2]/input[2]")).click();
-
     }
 
     public static void closeNYDetail(WebDriver webDriver) {
@@ -143,7 +174,6 @@ public class 普通项目上传附件 {
         webDriver.switchTo().window(allWindows.get(2));
     }
 
-
     public static void pressEnter() throws InterruptedException, AWTException {
 
         Robot r = new Robot();
@@ -159,12 +189,11 @@ public class 普通项目上传附件 {
         webDriver.switchTo().frame(webDriver.findElement(By.xpath("//iframe[con" +
                 "tains(@src,'/pms/pub/uploadfile/FlashUpload')]")));
 
-
         //上传附件点击
         webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr[2]/td/span/span")).click();
         Thread.sleep(1000);
-        webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr[2]/td/span")).findElement(By.cssSelector("object.swfupload")).click();
-        Thread.sleep(250);
+//        webDriver.findElement(By.xpath("//html/body/div[2]/form/table/tbody/tr[2]/td/span")).findElement(By.cssSelector("object.swfupload")).click();
+        Thread.sleep(350);
         Runtime.getRuntime().exec("D:\\autoltWork\\" + fileName + "文件选择程序.exe");
 
         //上传类型--查勘表
@@ -193,17 +222,17 @@ public class 普通项目上传附件 {
         //打印是否为查勘表
 //        System.out.println(webDriver.findElement(By.xpath("//html/body/div[4]/div/div[1]/div[2]/div[1]/table/tbody/tr[" + i + "]/td[2]")).getAttribute("textContent"));
 
-
         //上传
         webDriver.findElement(By.xpath("//html/body/div[2]/div/table/tbody/tr/td/a[1]/span")).click();
         //确定按钮
         webDriver.findElement(By.xpath("//html/body/div[3]/div/div[2]/div[2]/div/table/tbody/tr[3]/td/a[1]/span")).click();
 
         //关闭上传附件窗口
-        Thread.sleep(3500);
+        Thread.sleep(5500);
 //        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[2]/div[2]/a/span")).click();
 //        webDriver.switchTo().defaultContent();
         webDriver.switchTo().defaultContent();
+        Thread.sleep(100);
         webDriver.findElement(By.xpath("//html/body/div[5]/div/div[1]/div/div[2]/span[4]")).click();
 
         //运行去除readonly属性
@@ -227,8 +256,8 @@ public class 普通项目上传附件 {
         robot.keyPress(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-
     }
+
     public void pressTabKey()
     {
         Robot robot = null;
@@ -251,18 +280,6 @@ public class 普通项目上传附件 {
         }
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_ENTER);
-
     }
 
 }
-
-//        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody/tr[3]/td[2]/div/
-//        a/span")).click();
-//        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.tagName("tr")).findElement(By.xpath("//td[3]"));
-//        webDriver.findElement(By.xpath("//html/body/div[1]/div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.tagName("tr")).findElement(By.xpath("//td[2]")).click();
-//         webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div
-//         [4]/div[2]/div/table/tbody")).findElement(By.tagName("tr")).findElement(By.xpath("//td[2]/div")).click();
-//        webDriver.findElement(By.xpath("//html/body/div[2]/div/div[2]/div[4]/div[2]/div/table/tbody")).findElement(By.linkText("中国铁塔山西分公司太原市分公司2020年玉门河前进路口换电站主动规划能源类项目")).getText();
-//        webDriver.findElement(By.xpath("//td[@id='1$cell$12']/div/a/span")).click();
-//        webDriver.findElement(By.xpath("//td[4]/span")).click();
-
